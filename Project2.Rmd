@@ -11,11 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r Importing Datasets}
 
-yt_data = read.csv("/Users/zain-reza/Australia - New Life/Studies/1st Semester/Computational Data Analysis/Project 2/Global YouTube Statistics (1).csv")
+gdp_data = read.csv("GDP.csv")
 
-gdp_data = read.csv("/Users/zain-reza/Australia - New Life/Studies/1st Semester/Computational Data Analysis/Project 2/GDP.csv")
+yt_data = read.csv("Global YouTube Statistics (1).csv")
 
-
+int_data = read.csv("internet_usage.csv")
 ```
 
 ```{r Joining}
@@ -28,10 +28,6 @@ m1
 library(dplyr)
 m1 <- m1 %>% 
   rename(GDP_2022=X2022)
-
-
-
-
 ```
 
 
