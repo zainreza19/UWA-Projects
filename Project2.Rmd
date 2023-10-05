@@ -21,33 +21,89 @@ int_data = read.csv("internet_usage.csv")
 ```{r Joining}
 
 #Joining YT data and GDP data of 2022
-m1 <- merge(yt_data,gdp_data,by.x = 'Country',by.y='Country.Name')
-m1
+m2 <- merge(yt_data,gdp_data,by.x = 'Country',by.y='Country.Name')
+m2
+
+m2 <- merge(m2,int_data, by.x ='Country', by.y = 'Country.or.Area')
+m2
 
 #Renaming the Columns
 library(dplyr)
-m1 <- m1 %>% 
+m2 <- m2 %>% 
   rename(GDP_2022=X2022)
+
+```
+```{r}
+
+# Removing the irrelavant columns from the dataframe
+
+m2$rank <- NULL
+m2$Youtuber <- NULL
+m2$Title <- NULL
+m2$Abbreviation <- NULL
+m2$created_month <- NULL
+m2$Country.Code <- NULL
+m2$x <- NULL
+
+# subsetting the columns that are numerical to plot a correlation
+
+# Assuming df is your dataframe
+numeric_cols <- m2[sapply(m2, is.numeric)]
+
+options(scipen = 999)
+
+
+
+
+
+
+
+
+
+# # Check if the 'youtuber' column has unique values
+# if (!anyDuplicated(m1$youtuber) == 0) {
+# print("The 'youtuber' column has unique values.")
+# } else {
+# print("The 'youtuber' column does not have unique values.")
+# }
+
+```
+
+```{r}
+install.packages("skimr")
+library(skimr)
+skim(m2)
+```
+```{r Removing for Coorelation}
+
+corr_clean <- na.omit(numeric_cols)
+
+
+
+```
+
+```{r}
+# Install and load the 'corrplot' package if not already installed
+install.packages("corrplot")  # Uncomment and run if needed
+library(corrplot)
+
+
+
+# Create a correlation plot
+corrplot(corr_clean, method = "color", tl.cex=0.7)
+
+
+# Assuming your data frame is called 'my_data'
+#correlation_matrix <- cor(corr_clean)
+
+# Load the 'gplots' package if it's not already loaded
+install.packages("gplots")# Uncomment and run if needed
+library(gplots)
+
+# Create a heatmap of the correlation matrix
+heatmap(correlation_matrix, 
+        col = colorRampPalette(c("white", "orange", "red"))(10),
+        main = "Correlation Matrix Heatmap")
 ```
 
 
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
