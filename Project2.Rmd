@@ -95,13 +95,30 @@ corrplot(correlation_matrix, method = "color",tl.cex = 0.7)
 
 
 ```{r Removing Columns based on high coorelation}
-
 #Removing since all of them are correlated | lowest_monthly_earnings, highest_monthly_earnings lowest_yearly_earnings
 
 library(dplyr)
 m2 <- m2 %>%
   select(-lowest_monthly_earnings,-highest_monthly_earnings,-lowest_yearly_earnings)
 
+# Finding out the median for earnings inorder to classify it as "High" and "Low"
+```
+
+
+```{r Finding the median of Earnings}
+
+
+# Find the median of the 'highest_yearly_earnings' column
+median_value <- median(m2$highest_yearly_earnings)
+
+# Print the median value
+print(median_value)
+
+# Create a new binary column 'earnings_binary' based on the median
+m2$earnings_binary <- ifelse(m2$highest_yearly_earnings > median_value, 1, 0)
+
+# Print the updated dataset
+print(m2)
 
 
 
