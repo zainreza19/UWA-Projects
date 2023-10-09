@@ -77,33 +77,65 @@ skim(m2)
 ```{r Removing for Coorelation}
 
 corr_clean <- na.omit(numeric_cols)
-
+skim(corr_clean)
 
 
 ```
 
 ```{r}
-# Install and load the 'corrplot' package if not already installed
-install.packages("corrplot")  # Uncomment and run if needed
+install.packages("corrplot")  
 library(corrplot)
 
+correlation_matrix <- cor(corr_clean)
+#print(correlation_matrix)
+corrplot(correlation_matrix, method = "color",tl.cex = 0.7)
 
 
-# Create a correlation plot
-corrplot(corr_clean, method = "color", tl.cex=0.7)
-
-
-# Assuming your data frame is called 'my_data'
-#correlation_matrix <- cor(corr_clean)
-
-# Load the 'gplots' package if it's not already loaded
-install.packages("gplots")# Uncomment and run if needed
-library(gplots)
-
-# Create a heatmap of the correlation matrix
-heatmap(correlation_matrix, 
-        col = colorRampPalette(c("white", "orange", "red"))(10),
-        main = "Correlation Matrix Heatmap")
 ```
+
+
+```{r Removing Columns based on high coorelation}
+
+#Removing since all of them are correlated | lowest_monthly_earnings, highest_monthly_earnings lowest_yearly_earnings
+
+library(dplyr)
+m2 <- m2 %>%
+  select(-lowest_monthly_earnings,-highest_monthly_earnings,-lowest_yearly_earnings)
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
