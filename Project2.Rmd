@@ -96,21 +96,101 @@ corrplot(correlation_matrix, method = "color",tl.cex = 0.7)
 
 ```{r Removing Columns based on high coorelation}
 
-#Removing since all of them are correlated | lowest_monthly_earnings, highest_monthly_earnings lowest_yearly_earnings
+#Removing since all of them are correlated | lowest_monthly_earnings, highest_monthly_earnings lowest_yearly_earnings,video_views_for_the_last_30_days,subscribers_for_last_30_days
 
 library(dplyr)
 m2 <- m2 %>%
-  select(-lowest_monthly_earnings,-highest_monthly_earnings,-lowest_yearly_earnings)
+  select(-lowest_monthly_earnings,-highest_monthly_earnings,-lowest_yearly_earnings) 
 
 
+```
 
+```{r}
+# Find the median of the 'highest_yearly_earnings' column
+median_value <- median(m2$highest_yearly_earnings)
+
+# Print the median value
+print(median_value)
+
+# Create a new binary column 'earnings_binary' based on the median
+m2$earnings_binary <- ifelse(m2$highest_yearly_earnings > median_value, 1, 0)
+
+# Print the updated dataset
+print(m2)
+```
+
+```{r More Cleaning}
+
+
+#Removing since all of them are correlated | lowest_monthly_earnings, highest_monthly_earnings lowest_yearly_earnings, created_date
+
+library(dplyr)
+m2 <- m2 %>%
+  select(-subscribers_for_last_30_days)
+
+m2$category <- gsub("nan", "Other", m2$category)
+m2 <- na.omit(m2)
+
+#rename a column
+
+colnames(m2)[colnames(m2) == "Gross.tertiary.education.enrollment...."] <- "educationEnrollmentTertiary"
+
+
+head(m2)
+
+```
+
+
+```{r Splitting our Data into Test and Training Data}
+
+set.seed(11051998) # setting a seed code
+m2$rNum <- runif(dim(m2)[1]) # making a random number column
+m2Train <- subset(m2,rNum<=0.8) # making a training set of 80/20 split
+m2Test <- subset(m2,rNum>0.8) # making a testing set
 
 
 ```
 
 
+```{r Building up a set inside Training set for Calibration/Validation}
+
+validationUse <- rbinom(n=dim(m2Train)[1],size=1,prob=0.1)>0 # generates a random bionomial distribution 1 or 0s with probability 10%
+m2Cal <- subset(m2Train,validationUse) # subsets 10% of the data from the training set we made above
+m2Train <- subset(m2Train, !validationUse) # puts the remaining 90% back in our dataset
 
 
+```
+
+
+```{r Building up a Decision Tree}
+
+library('rpart')
+
+# (features <- paste(m2Train$earnings_binary,'> 0 ~ ',paste(c(m2Train$catVars, m2Train$numericVars), collapse=' + '), sep=''))
+#features <- as.formula(features)
+
+tmodel <- rpart(earnings_binary ~ Country+ subscribers+ video.views+ category+ uploads+ channel_type+ video_views_rank+ country_rank+ channel_type_rank+ created_year+ created_date+educationEnrollmentTertiary+ Population.x+ Unemployment.rate+ Urban_population+ Latitude+ Longitude+ GDP_2022+ Internet.Users+ Population.y+ Rank+ Percentage+ Rank.1+ rNum+ category, data=m2Train)
+
+
+
+```
+```{r Plot}
+
+library(rpart)
+library(rpart.plot)
+rpart.plot(tmodel)
+
+
+```
+
+
+```{r Calculating AUC}
+install.packages("pROC")
+library(pROC)
+print(roc(predict(tmodel, newdata=m2Train), m2Train[,earnings_binary]))
+
+
+```
 
 
 
