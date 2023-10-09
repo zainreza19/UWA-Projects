@@ -5,6 +5,14 @@ date: "2023-10-05"
 output: html_document
 ---
 
+# Introduction
+
+The “Global YouTube Statistics 2023” dataset refers to a collection of data that provides information and insights about YouTube videos, channels, and user engagement on a global scale. This dataset can include a wide range of variables and metrics related to videos, channels, viewership, interactions, etc.
+
+In our project we are using three datasets namely youtube_data, GDP_data, and internet_usage_data. 
+
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
