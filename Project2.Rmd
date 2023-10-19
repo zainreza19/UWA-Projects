@@ -273,5 +273,32 @@ Cluster 4 (Purple): This cluster has the fewest data points, which are quite spr
 
 The data has been grouped into four clusters based on their similarities across the two primary dimensions. Clusters 1 and 2 are densely populated and relatively close, suggesting more commonalities between them compared to Clusters 3 and 4. The latter two are more spread out, with Cluster 4 potentially capturing outliers or unique cases in the dataset. Both dimensions (Dim1 and Dim2) play a substantial role in the clustering, with Dim1 having a slightly higher contribution to the variance.
 
+# Evalutaing the performance of the Clustering 
+
+```{r}
+# Remove rows with NA values
+data_cleaned <- na.omit(data)
+# Implementation of clustering, we will choose k = 4
+set.seed(123)
+kmeans_result <- kmeans(data_scaled, centers=4, nstart=25)
+# Load required package
+library(cluster)
+# 1. Compute distance matrix
+dist_matrix <- dist(data_cleaned)
+# 2. Compute silhouette scores
+sil_scores <- silhouette(kmeans_result$cluster, dist_matrix)
+# Load required package
+library(cluster)
+# 1. Compute distance matrix
+dist_matrix <- dist(data_cleaned)
+# 2. Compute silhouette scores
+sil_scores <- silhouette(kmeans_result$cluster, dist_matrix)
+# To see the average silhouette score for all samples
+avg_sil_score <- mean(sil_scores[, 3])
+# You can also visualize the silhouette scores:
+plot(sil_scores, main = paste("Silhouette plot for k =", length(unique(kmeans_result$cluster))))
+```
+
+
 
 
