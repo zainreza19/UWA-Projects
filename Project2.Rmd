@@ -277,20 +277,14 @@ The data has been grouped into four clusters based on their similarities across 
 
 ```{r}
 # Remove rows with NA values
-data_cleaned <- na.omit(data)
+# data_cleaned <- na.omit(data)
 # Implementation of clustering, we will choose k = 4
 set.seed(123)
 kmeans_result <- kmeans(data_scaled, centers=4, nstart=25)
 # Load required package
 library(cluster)
 # 1. Compute distance matrix
-dist_matrix <- dist(data_cleaned)
-# 2. Compute silhouette scores
-sil_scores <- silhouette(kmeans_result$cluster, dist_matrix)
-# Load required package
-library(cluster)
-# 1. Compute distance matrix
-dist_matrix <- dist(data_cleaned)
+dist_matrix <- dist(data_scaled)
 # 2. Compute silhouette scores
 sil_scores <- silhouette(kmeans_result$cluster, dist_matrix)
 # To see the average silhouette score for all samples
